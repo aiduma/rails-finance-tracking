@@ -1,5 +1,18 @@
 # frozen_string_literal: true
 
+class TurboFailureApp < Devise::FailureApp
+  def respond
+    if request_format == :turbo_stream
+      redirect
+    else
+      super
+    end
+  end
+
+  def skip_format?
+    %w[html turbo_stream */*].include? request_format.to_s
+  end
+end
 # Assuming you have not yet modified this file, each configuration option below
 # is set to its default value. Note that some are commented out while others
 # are not: uncommented lines are intended to protect your configuration from
@@ -14,7 +27,27 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = 'ac327ee354679586b6d95350d9109b2caa312dcdcf204003bb09e30634d1d3a784e98d0b8307a4a041799e6be539fa205a5910460552e6906b963c72a394bb6c'
+  # config.secret_key = '8b4e401b7222babc16dfe04e9d77d698a60ffb96c7288541869b9e53f15f529235d28d7f67a835758f5f5d61660d80a421c637705bdddd86293aa75179764bf6'
+
+  # ==> Controller configuration
+  # Configure the parent class to the devise controllers.
+  config.parent_controller = 'TurboDeviseController'
+
+  # ...
+
+  # ==> Navigation configuration
+  # ...
+  config.navigational_formats = ['*/*', :html, :turbo_stream]
+
+  # ...
+
+  # ==> Warden configuration
+  # ...
+  config.warden do |manager|
+    manager.failure_app = TurboFailureApp
+    #   manager.intercept_401 = false
+    #   manager.default_strategies(scope: :user).unshift :some_external_strategy
+  end
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -126,7 +159,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = 'fb51e6e9ff218d9cba29439eeb0cb39bbf0076ad9e38a96b26e2ce9a14a05469af52f422f1731ae0111529ac1b2f07af2ce2c284c6328a2cccf5e3714f9b38b9'
+  # config.pepper = '743a5ff100730e358ddc55df1fe2dcd297e1c867ae4fdf41a34891ffb16c59ca1d0a873eb0b6d3abcafbd2fd1ea08aa4251439d2e88a4242db17419b2312f0dd'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
