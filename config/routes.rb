@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   devise_scope :user do
     get "users", to: "devise/sessions#new"
   end
+
+  get 'search_stock', to: 'stocks#search'
   # Defines the root path route ("/")
   # root "articles#index"
 end
