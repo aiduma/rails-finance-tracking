@@ -15,4 +15,7 @@
     padding-left: 0 !important;
 }
 
-
+.results-block {
+    margin-top: 20px;
+    display: inline-block
+}
